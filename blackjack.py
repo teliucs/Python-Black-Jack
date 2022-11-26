@@ -16,7 +16,7 @@ from art import logo
 
 
 def main():
-    print("-------------------------------------------------------------")
+    print("----------------------------------------------------------------")
     print("""Welcome to the Teliucs Black Jack
     Would you like to play?
         [1] Yes | [2] No""")
@@ -25,7 +25,7 @@ def main():
         play()
     else:
         print("I already felt that you were not ready for this.")
-    print("-------------------------------------------------------------")
+    print("----------------------------------------------------------------")
 
 
 def init_cards():
@@ -48,33 +48,54 @@ def init_cards():
 
 def play():
     """Start, play and end game"""
-    cards, my_cards, computer_cards = init_cards()
-    my_score = sum(my_cards)
-    computer_score = sum(computer_cards)
-    
-    print(f"Your cards: {my_cards}, score: {my_score}.")
-    print(f"Compter's first card: {computer_cards[0]}.")
-    print()
+    while True:
+        cards, my_cards, computer_cards = init_cards()
+        my_score = sum(my_cards)
+        computer_score = sum(computer_cards)
+        
+        print(f"Your cards: {my_cards}, score: {my_score}.")
+        print(f"Computer's first card: {computer_cards[0]}.")
+        print()
 
-    print("\tDo you want another card or to pass?")
-    choice = int(input("\t[1] Yes | [2] Pass: "))
-    
-    i = 1
-    while choice == 1:
-        print()
-        print(f"\tTURN {i}:")
-        cards, my_cards, my_score = draw_cards(cards, my_cards, my_score)
-        print(f"\tYour cards: {my_cards}, score: {my_score}.")
-        print(f"\tCompter's first card: {computer_cards[0]}.")
-        print()
         print("\tDo you want another card or to pass?")
         choice = int(input("\t[1] Yes | [2] Pass: "))
-        i += 1
+        
+        i = 1
+        while choice == 1:
+            print("\n----------------------------------------------------------------")
+            print(f"\tTURN {i}:")
+            cards, my_cards, my_score = draw_cards(cards, my_cards, my_score)
+            print(f"\tYour cards: {my_cards}, score: [{my_score}].")
+            if my_score > 21:
+                print(f"\tYou have exceed the maximum value, now you are at [{my_score}]. Sorry you have just lost.")
+                break
+    
+            print(f"\tComputer's first card: {computer_cards[0]}.")
+            print()
+            print("\tDo you want another card or to pass?")
+            choice = int(input("\t[1] Yes | [2] Pass: "))
+            i += 1
+        print("----------------------------------------------------------------")
 
+        if my_score <= 21:
+            cards, computer_cards, computer_score = computer_turn(cards, computer_cards, computer_score)
+            if computer_score > 21:
+                print(f"\tComputer has exceed the maximum value, now it is at [{computer_score}]. Congrats you have won.")
+            else:
+                print("\nLet's who won:")
+                if calculate_results(my_score, computer_score) == 'W':
+                    print('Congrats you have won.')
+                elif calculate_results(my_score, computer_score) == 'L':
+                    print('Sorry you have just lost. Better luck next time.')
+                else:
+                    print("It's a tie.")
+        break
+                
     
 
 
 def draw_cards(cards, my_cards, my_score):
+    """Draw a card from the remaining ones"""
     mine = random.choice(cards)
     print(f"\tYou have drawn {mine}.")
     cards.remove(mine)
@@ -82,13 +103,36 @@ def draw_cards(cards, my_cards, my_score):
         mine = choose_value_ace()
     my_cards.append(mine)
     my_score = sum(my_cards)
-    if my_score > 21:
-        print(f"\tYou have exceed the maximum value, now you are at {my_score}. Sorry you have just lost.")
     return cards, my_cards, my_score
 
 
-def calculate_results(my_score, comp_score):
-    pass
+def computer_turn(cards, computer_cards, computer_scores):
+    """Code the computer turn"""
+    print("\n\tNow the computer has to drawn or pass.")
+    while computer_scores < 17:
+        drawn_card = random.choice(cards)
+        print(f"\tComputer have drawn {drawn_card}.")
+        print(f"\tComputer cards: {computer_cards}, score: [{computer_scores}].")
+        cards.remove(drawn_card)
+        if drawn_card == 11:
+            drawn_card = 1
+        computer_cards.append(drawn_card)
+        computer_scores = sum(computer_cards)
+    else:
+        print(f"\tGiven that the computer is at [{computer_scores}], it will no drawn any card.")
+    return cards, computer_cards, computer_scores
+            
+
+def calculate_results(my_score, computer_score):
+    print(f"Your scores is [{my_score}] and the computer's one is [{computer_score}].")
+    print("...")
+    print("...")
+    if my_score > computer_score:
+        return 'W'
+    if my_score < computer_score:
+        return 'L'
+    else:
+        return 'T'
 
 
 def choose_value_ace():
