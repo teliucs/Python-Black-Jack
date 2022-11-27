@@ -25,6 +25,7 @@ def main():
         play()
     else:
         print("I already felt that you were not ready for this.")
+    print()
     print("----------------------------------------------------------------")
 
 
@@ -42,6 +43,8 @@ def init_cards():
     
     my_cards = [first_me, second_me]
     computer_cards = [first_computer, second_computer]
+    print("----------------------------------------------------------------")
+
     
     return cards, my_cards, computer_cards
 
@@ -111,19 +114,20 @@ def computer_turn(cards, computer_cards, computer_scores):
     print("\n\tNow the computer has to drawn or pass.")
     while computer_scores < 17:
         drawn_card = random.choice(cards)
-        print(f"\tComputer have drawn {drawn_card}.")
-        print(f"\tComputer cards: {computer_cards}, score: [{computer_scores}].")
-        cards.remove(drawn_card)
         if drawn_card == 11:
             drawn_card = 1
+        cards.remove(drawn_card)
         computer_cards.append(drawn_card)
         computer_scores = sum(computer_cards)
+        print(f"\tComputer have drawn {drawn_card}.")
+        print(f"\tComputer cards: {computer_cards}, score: [{computer_scores}].")
     else:
         print(f"\tGiven that the computer is at [{computer_scores}], it will no drawn any card.")
     return cards, computer_cards, computer_scores
             
 
 def calculate_results(my_score, computer_score):
+    """"Get results"""
     print(f"Your scores is [{my_score}] and the computer's one is [{computer_score}].")
     print("...")
     print("...")
@@ -136,6 +140,7 @@ def calculate_results(my_score, computer_score):
 
 
 def choose_value_ace():
+    """Ace's value can be 1 or 11, it let the user to choose"""
     print()
     print("\t\tGiven that you have drawn an ace, you have to choose its value.")
     choice = int(input("\t\t[1] | [11]: "))
